@@ -218,9 +218,31 @@
   footer a:hover{color:var(--rust);}
 
   @media (max-width:800px){
-    header{padding:1rem 1.5rem;}
-    nav{gap:1rem;font-size:0.6rem;}
-    main{padding:7rem 1.5rem 4rem;}
+    header{
+      padding:1rem 1.25rem;
+      flex-wrap:wrap;
+      gap:0.75rem;
+    }
+    nav{
+      gap:0.9rem;
+      font-size:0.62rem;
+      flex-wrap:wrap;
+      row-gap:0.5rem;
+    }
+    main{padding:8rem 1.5rem 4rem;}
+    .contact-sub{max-width:34ch;margin:0 auto 2.5rem;}
+    form{gap:1.5rem;}
+    .contact-coords{
+      flex-direction:column;
+      gap:0.5rem;
+      margin-top:3rem;
+    }
+    footer{
+      flex-direction:column;
+      gap:1rem;
+      text-align:center;
+      padding:2rem 1.5rem;
+    }
   }
 
   .back-to-top{

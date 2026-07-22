@@ -26,6 +26,7 @@
     color:var(--dust);
     font-family:'Cormorant Garamond', serif;
     overflow-x:hidden;
+    line-height:1.5;
   }
 
   .grain{
@@ -164,7 +165,7 @@
   .prompt-text{
     font-family:'Space Mono', monospace;
     font-size:0.8rem;
-    line-height:1.8;
+    line-height:1.95;
     color:var(--ash);
     background:rgba(232,217,195,0.03);
     border-left:2px solid var(--rust);
@@ -214,6 +215,7 @@
   .bts-card.wide{grid-column:1 / -1;}
 
   .bts-frame{
+    cursor:pointer;
     width:100%;
     aspect-ratio:3/2;
     overflow:hidden;
@@ -261,11 +263,6 @@
     color:var(--rust);
   }
 
-  @media (max-width:800px){
-    .bts-grid{grid-template-columns:1fr;}
-    .bts-section{padding:0 1.5rem 6rem;}
-  }
-
   footer{
     padding:3rem;
     display:flex;
@@ -282,9 +279,32 @@
   footer a:hover{color:var(--rust);}
 
   @media (max-width:800px){
-    header{padding:1rem 1.5rem;}
-    nav{gap:1rem;font-size:0.6rem;}
+    header{
+      padding:1rem 1.25rem;
+      flex-wrap:wrap;
+      gap:0.75rem;
+    }
+    nav{
+      gap:0.9rem;
+      font-size:0.62rem;
+      flex-wrap:wrap;
+      row-gap:0.5rem;
+    }
+    .page-hero{padding:0 1.5rem;height:40vh;}
+    .imperfection-banner{margin:0 1.5rem 3rem;padding:1rem 1.5rem;}
     .prompt-list{padding:0 1.5rem 6rem;}
+    .prompt-title{font-size:1.2rem;}
+    .prompt-text{font-size:0.75rem;padding:0.9rem 1.1rem;}
+    .bts-grid{grid-template-columns:1fr;gap:1.25rem;}
+    .bts-section{padding:0 1.5rem 6rem;}
+    .bts-intro{margin-bottom:2.25rem;}
+    .bts-intro h2{font-size:1.6rem;}
+    footer{
+      flex-direction:column;
+      gap:1rem;
+      text-align:center;
+      padding:3rem 1.5rem 2.5rem;
+    }
   }
 
   .back-to-top{
@@ -327,11 +347,64 @@
     letter-spacing:0.08em;
     margin-top:0.3rem;
   }
+
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(10,8,6,0.95);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    cursor:zoom-out;
+    padding:3rem 2rem;
+  }
+
+  .lightbox.active{display:flex;}
+
+  .lightbox img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    cursor:default;
+  }
+
+  .lightbox-close{
+    position:absolute;
+    top:1.5rem;
+    right:2rem;
+    font-family:'Space Mono', monospace;
+    font-size:1.8rem;
+    line-height:1;
+    color:var(--dust);
+    cursor:pointer;
+    z-index:101;
+    background:rgba(26,20,16,0.6);
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .lightbox-close:hover{color:var(--rust);}
+
+  @media (max-width:800px){
+    .lightbox{padding:1.5rem 1rem;}
+    .lightbox-close{top:1rem;right:1rem;width:36px;height:36px;font-size:1.4rem;}
+  }
 </style>
 </head>
 <body>
 
 <div class="grain"></div>
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" id="lightboxClose">&times;</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 
 <header>
   <a href="index.html" class="brand">Stampede Production</a>
@@ -541,5 +614,36 @@
   });
 </script>
 
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(src){
+    lightboxImg.src = src;
+    lightbox.classList.add('active');
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('active');
+    lightboxImg.src = '';
+  }
+
+  document.querySelectorAll('.plan-frame[data-img]').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => openLightbox(el.getAttribute('data-img')));
+  });
+
+  document.querySelectorAll('.bts-frame img').forEach(img => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => openLightbox(img.src));
+  });
+
+  lightbox.addEventListener('click', closeLightbox);
+  if(lightboxClose){
+    lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+  }
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+</script>
 </body>
 </html>
