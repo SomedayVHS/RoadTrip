@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two Lane, No Name — Stampede Production</title>
+<meta name="description" content="A desert road trip study. Stampede Production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:       #1A1410;
+    --dust:      #E8D9C3;
+    --rust:      #A8502E;
+    --dusk-blue: #3D4A5C;
+    --amber:     #C98A3E;
+    --ash:       #6B6259;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--ink);
+    color:var(--dust);
+    font-family:'Cormorant Garamond', serif;
+    overflow-x:hidden;
+  }
+
+  .grain{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.5rem 3rem;
+    background:linear-gradient(to bottom, rgba(26,20,16,0.9), transparent);
+  }
+
+  .brand{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--dust);
+  }
+
+  nav{
+    display:flex;
+    gap:2rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+  }
+
+  nav a{
+    color:var(--dust);
+    text-decoration:none;
+    opacity:0.6;
+    transition:opacity 0.3s ease, color 0.3s ease;
+    position:relative;
+  }
+
+  nav a:hover{opacity:1;color:var(--rust);}
+
+  .odometer-track{
+    position:fixed;
+    top:0;left:0;right:0;
+    height:2px;
+    background:var(--ash);
+    opacity:0.3;
+    z-index:39;
+  }
+
+  .odometer-fill{
+    height:100%;
+    background:var(--rust);
+    width:0%;
+    transition:width 0.1s linear;
+  }
+
+  .hero{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    background:
+      linear-gradient(180deg, rgba(26,20,16,0.3) 0%, rgba(26,20,16,0.75) 85%, var(--ink) 100%),
+      radial-gradient(ellipse at center 60%, #4A3324 0%, #2A2018 55%, var(--ink) 100%);
+  }
+
+  .hero-eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:1.5rem;
+  }
+
+  .hero h1{
+    font-size:clamp(3rem, 9vw, 7.5rem);
+    font-weight:400;
+    font-style:italic;
+    line-height:1.05;
+    color:var(--dust);
+  }
+
+  .hero-sub{
+    margin-top:1.5rem;
+    font-size:1.1rem;
+    color:var(--ash);
+    max-width:32ch;
+    line-height:1.6;
+  }
+
+  .hero-coords{
+    position:absolute;
+    bottom:3rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    color:var(--ash);
+    display:flex;
+    gap:2rem;
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:6rem;
+    width:1px;
+    height:60px;
+    background:linear-gradient(to bottom, transparent, var(--rust));
+    animation:pulse-scroll 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-scroll{
+    0%,100%{opacity:0.3;}
+    50%{opacity:1;}
+  }
+
+  .statement{
+    max-width:640px;
+    margin:0 auto;
+    padding:10rem 2rem;
+    text-align:center;
+  }
+
+  .statement p{
+    font-size:1.6rem;
+    line-height:1.8;
+    font-style:italic;
+    color:var(--dust);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .statement p.visible{opacity:1;transform:translateY(0);}
+
+  .statement .imperfection{
+    display:block;
+    margin-top:2rem;
+    font-family:'Space Mono', monospace;
+    font-style:normal;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--amber);
+    opacity:0.8;
+  }
+
+  .acts{
+    padding:4rem 3rem 10rem;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:2px;
+    background:var(--ash);
+  }
+
+  .act-card{
+    background:var(--ink);
+    padding:4rem 2.5rem;
+    position:relative;
+    overflow:hidden;
+    text-decoration:none;
+    color:var(--dust);
+    min-height:420px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .act-card.visible{opacity:1;transform:translateY(0);}
+
+  .act-card::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    opacity:0.35;
+    transition:opacity 0.5s ease, transform 0.6s ease;
+  }
+
+  .act-i::before{background:radial-gradient(ellipse at 30% 20%, var(--dusk-blue), transparent 70%);}
+  .act-ii::before{background:radial-gradient(ellipse at 70% 30%, var(--amber), transparent 70%);}
+  .act-iii::before{background:radial-gradient(ellipse at 40% 60%, var(--rust), transparent 70%);}
+  .act-iv::before{background:radial-gradient(ellipse at 60% 40%, var(--dusk-blue), transparent 70%);}
+
+  .act-card:hover::before{opacity:0.55;transform:scale(1.08);}
+
+  .exit-tag{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    color:var(--amber);
+    margin-bottom:0.8rem;
+    position:relative;
+    z-index:1;
+  }
+
+  .act-card h2{
+    font-size:2.2rem;
+    font-weight:400;
+    font-style:italic;
+    line-height:1.15;
+    position:relative;
+    z-index:1;
+    margin-bottom:0.5rem;
+  }
+
+  .act-card .act-desc{
+    font-size:1rem;
+    color:var(--ash);
+    position:relative;
+    z-index:1;
+    max-width:34ch;
+  }
+
+  .act-card .arrow{
+    margin-top:1.5rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    color:var(--rust);
+    position:relative;
+    z-index:1;
+    transition:transform 0.3s ease;
+  }
+
+  .act-card:hover .arrow{transform:translateX(6px);}
+
+  @media (max-width:800px){
+    .acts{grid-template-columns:1fr;}
+    header{padding:1rem 1.5rem;}
+    nav{gap:1rem;font-size:0.6rem;}
+  }
+
+  footer{
+    padding:4rem 3rem 3rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid rgba(232,217,195,0.1);
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    color:var(--ash);
+  }
+
+  footer a{color:var(--dust);text-decoration:none;}
+  footer a:hover{color:var(--rust);}
+
+  .back-to-top{
+    position:fixed;
+    bottom:2rem;
+    right:2rem;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(26,20,16,0.85);
+    border:1px solid rgba(232,217,195,0.25);
+    color:var(--dust);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    z-index:60;
+    text-decoration:none;
+  }
+
+  .back-to-top.visible{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+
+  .back-to-top:hover{
+    border-color:var(--rust);
+  }
+
+  .footer-brand small{
+    display:block;
+    font-size:0.6rem;
+    color:var(--ash);
+    letter-spacing:0.08em;
+    margin-top:0.3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="odometer-track"><div class="odometer-fill" id="odometerFill"></div></div>
+
+<header>
+  <div class="brand">Stampede Production</div>
+  <nav>
+    <a href="act-i-departure.html">Exit 01</a>
+    <a href="act-ii-the-road.html">Exit 02</a>
+    <a href="act-iii-the-camp.html">Exit 03</a>
+    <a href="act-iv-horizon.html">Exit 04</a>
+    <a href="making-of.html">Making-of</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">A desert study</div>
+  <h1>Two Lane,<br>No Name</h1>
+  <p class="hero-sub">Two figures. One straight road. The desert keeps its own time.</p>
+  <div class="hero-coords">
+    <span>34.9°N — 116.4°W</span>
+    <span>KODAK VISION3</span>
+    <span>2.39:1</span>
+  </div>
+  <div class="scroll-cue"></div>
+</section>
+
+<section class="statement">
+  <p id="statementText">
+    They don't speak much. The road does that for them —
+    a straight line drawn through heat and silence,
+    toward a horizon that never quite arrives.
+    <span class="imperfection">Analog imperfection is intentional.</span>
+  </p>
+</section>
+
+<section class="acts">
+  <a href="act-i-departure.html" class="act-card act-i">
+    <div class="exit-tag">Exit 47 — Act I</div>
+    <h2>The Departure</h2>
+    <p class="act-desc">Dawn. A driveway. The last bag in the trunk.</p>
+    <span class="arrow">Enter →</span>
+  </a>
+
+  <a href="act-ii-the-road.html" class="act-card act-ii">
+    <div class="exit-tag">Exit 112 — Act II</div>
+    <h2>The Road</h2>
+    <p class="act-desc">Heat, distance, a gas station ghost town.</p>
+    <span class="arrow">Enter →</span>
+  </a>
+
+  <a href="act-iii-the-camp.html" class="act-card act-iii">
+    <div class="exit-tag">Exit 203 — Act III</div>
+    <h2>The Camp</h2>
+    <p class="act-desc">Dusk on the dunes. Firelight and grain.</p>
+    <span class="arrow">Enter →</span>
+  </a>
+
+  <a href="act-iv-horizon.html" class="act-card act-iv">
+    <div class="exit-tag">Exit 244 — Act IV</div>
+    <h2>The Horizon</h2>
+    <p class="act-desc">Next dawn. The car pulls away, again.</p>
+    <span class="arrow">Enter →</span>
+  </a>
+</section>
+
+<footer>
+  <span class="footer-brand">Stampede Production<br><small>Un studio cinématographique de <a href="https://somedayvhs.github.io/someday-production/index.html" target="_blank" rel="noopener">Someday Production</a> — Lyon, Croix-Rousse — © 2026</small></span>
+  <a href="making-of.html">Making-of</a>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrolled / height) * 100;
+    document.getElementById('odometerFill').style.width = pct + '%';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.act-card, .statement p').forEach(el => observer.observe(el));
+</script>
+
+<a href="#" class="back-to-top" id="backToTop" aria-label="Remonter en haut">↑</a>
+
+<script>
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 600){
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  });
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+
+</body>
+</html>

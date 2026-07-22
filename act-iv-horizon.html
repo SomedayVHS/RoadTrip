@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Act IV — The Horizon | Two Lane, No Name — Stampede Production</title>
+<meta name="description" content="Act IV. Next dawn. The car pulls away, again. Stampede Production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:       #1A1410;
+    --dust:      #E8D9C3;
+    --rust:      #A8502E;
+    --dusk-blue: #3D4A5C;
+    --amber:     #C98A3E;
+    --ash:       #6B6259;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--ink);
+    color:var(--dust);
+    font-family:'Cormorant Garamond', serif;
+    overflow-x:hidden;
+  }
+
+  .grain{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.5rem 3rem;
+    background:linear-gradient(to bottom, rgba(26,20,16,0.9), transparent);
+  }
+
+  .brand{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--dust);
+    text-decoration:none;
+  }
+
+  nav{
+    display:flex;
+    gap:2rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+  }
+
+  nav a{
+    color:var(--dust);
+    text-decoration:none;
+    opacity:0.6;
+    transition:opacity 0.3s ease, color 0.3s ease;
+  }
+
+  nav a:hover{opacity:1;color:var(--dusk-blue);}
+  nav a.active{opacity:1;color:var(--dusk-blue);}
+
+  .odometer-track{
+    position:fixed;
+    top:0;left:0;right:0;
+    height:2px;
+    background:var(--ash);
+    opacity:0.3;
+    z-index:39;
+  }
+
+  .odometer-fill{
+    height:100%;
+    background:var(--dusk-blue);
+    width:0%;
+    transition:width 0.1s linear;
+  }
+
+  .act-hero{
+    height:60vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    background:
+      linear-gradient(180deg, rgba(26,20,16,0.35) 0%, rgba(26,20,16,0.8) 90%, var(--ink) 100%),
+      radial-gradient(ellipse at center 55%, #384454 0%, #222A34 55%, var(--ink) 100%);
+  }
+
+  .exit-tag{
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--dusk-blue);
+    margin-bottom:1.5rem;
+  }
+
+  .act-hero h1{
+    font-size:clamp(2.5rem, 7vw, 5.5rem);
+    font-weight:400;
+    font-style:italic;
+    line-height:1.1;
+  }
+
+  .act-hero .act-intro{
+    margin-top:1.5rem;
+    font-size:1.1rem;
+    color:var(--ash);
+    max-width:38ch;
+    line-height:1.7;
+  }
+
+  .plan{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:6rem 3rem;
+    position:relative;
+  }
+
+  .plan-frame{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    aspect-ratio:2.39/1;
+    background:linear-gradient(135deg, #384454 0%, #222A34 60%, var(--ink) 100%);
+    border:1px solid rgba(232,217,195,0.15);
+    position:relative;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .plan-frame.visible{opacity:1;transform:translateY(0);}
+
+  .plan-frame::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.35) 100%);
+  }
+
+  .plan-meta{
+    position:absolute;
+    top:1.5rem;
+    left:1.5rem;
+    right:1.5rem;
+    display:flex;
+    justify-content:space-between;
+    font-family:'Space Mono', monospace;
+    font-size:0.65rem;
+    letter-spacing:0.1em;
+    color:rgba(232,217,195,0.5);
+    z-index:2;
+  }
+
+  .plan-caption{
+    max-width:640px;
+    margin:2.5rem auto 0;
+    text-align:center;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease 0.2s, transform 1s ease 0.2s;
+  }
+
+  .plan-caption.visible{opacity:1;transform:translateY(0);}
+
+  .plan-number{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    color:var(--dusk-blue);
+    margin-bottom:0.5rem;
+  }
+
+  .plan-title{
+    font-size:1.8rem;
+    font-style:italic;
+    font-weight:400;
+    margin-bottom:0.8rem;
+  }
+
+  .plan-desc{
+    font-size:1rem;
+    color:var(--ash);
+    line-height:1.7;
+  }
+
+  .closing{
+    max-width:560px;
+    margin:0 auto;
+    padding:6rem 2rem 10rem;
+    text-align:center;
+  }
+
+  .closing p{
+    font-size:1.4rem;
+    font-style:italic;
+    line-height:1.8;
+    color:var(--dust);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+
+  .closing p.visible{opacity:1;transform:translateY(0);}
+
+  .back-index{
+    display:block;
+    margin-top:2.5rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--amber);
+    text-decoration:none;
+  }
+
+  .back-index:hover{color:var(--rust);}
+
+  footer{
+    padding:3rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    color:var(--ash);
+    border-top:1px solid rgba(232,217,195,0.1);
+  }
+
+  footer a{color:var(--dust);text-decoration:none;}
+  footer a:hover{color:var(--rust);}
+
+  @media (max-width:800px){
+    header{padding:1rem 1.5rem;}
+    nav{gap:1rem;font-size:0.6rem;}
+    .plan{padding:4rem 1.5rem;}
+  }
+
+  .back-to-top{
+    position:fixed;
+    bottom:2rem;
+    right:2rem;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(26,20,16,0.85);
+    border:1px solid rgba(232,217,195,0.25);
+    color:var(--dust);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    z-index:60;
+    text-decoration:none;
+  }
+
+  .back-to-top.visible{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+
+  .back-to-top:hover{
+    border-color:var(--rust);
+  }
+
+  .footer-brand small{
+    display:block;
+    font-size:0.6rem;
+    color:var(--ash);
+    letter-spacing:0.08em;
+    margin-top:0.3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="odometer-track"><div class="odometer-fill" id="odometerFill"></div></div>
+
+<header>
+  <a href="index.html" class="brand">Stampede Production</a>
+  <nav>
+    <a href="act-i-departure.html">Exit 01</a>
+    <a href="act-ii-the-road.html">Exit 02</a>
+    <a href="act-iii-the-camp.html">Exit 03</a>
+    <a href="act-iv-horizon.html" class="active">Exit 04</a>
+    <a href="making-of.html">Making-of</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="act-hero">
+  <div class="exit-tag">Exit 244 — Act IV</div>
+  <h1>The Horizon</h1>
+  <p class="act-intro">Dawn again, paler this time. The desert holds the frame longer than the car holds the road.</p>
+</section>
+
+<section class="plan">
+  <div>
+    <div class="plan-frame" style="background-image:url('11-leaving-again.png');background-size:cover;background-position:center;">
+      <div class="plan-meta"><span>250D — WIDE STATIC, FAR</span><span>11 / 11</span></div>
+    </div>
+    <div class="plan-caption">
+      <div class="plan-number">Plan 11</div>
+      <div class="plan-title">Leaving, Again</div>
+      <div class="plan-desc">Pale dawn desert, faint ground mist. The car pulling away down the straight road, two small silhouettes through the rear window. The frame holds the emptiness longer than the car.</div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <p>Two Lane, No Name.<br>The road keeps going. They don't look back.</p>
+  <a href="index.html" class="back-index">Return to the beginning</a>
+</section>
+
+<footer>
+  <a href="index.html">Two Lane, No Name</a>
+  <span class="footer-brand">Stampede Production<br><small>Un studio cinématographique de <a href="https://somedayvhs.github.io/someday-production/index.html" target="_blank" rel="noopener">Someday Production</a> — Lyon, Croix-Rousse — © 2026</small></span>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrolled / height) * 100;
+    document.getElementById('odometerFill').style.width = pct + '%';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  document.querySelectorAll('.plan-frame, .plan-caption, .closing p').forEach(el => observer.observe(el));
+</script>
+
+<a href="#" class="back-to-top" id="backToTop" aria-label="Remonter en haut">↑</a>
+
+<script>
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 600){
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  });
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+
+</body>
+</html>

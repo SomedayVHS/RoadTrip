@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making-of | Two Lane, No Name — Stampede Production</title>
+<meta name="description" content="Notes de production, prompts et intentions créatives. Stampede Production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:       #1A1410;
+    --dust:      #E8D9C3;
+    --rust:      #A8502E;
+    --dusk-blue: #3D4A5C;
+    --amber:     #C98A3E;
+    --ash:       #6B6259;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--ink);
+    color:var(--dust);
+    font-family:'Cormorant Garamond', serif;
+    overflow-x:hidden;
+  }
+
+  .grain{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.5rem 3rem;
+    background:linear-gradient(to bottom, rgba(26,20,16,0.9), transparent);
+  }
+
+  .brand{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--dust);
+    text-decoration:none;
+  }
+
+  nav{
+    display:flex;
+    gap:2rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+  }
+
+  nav a{
+    color:var(--dust);
+    text-decoration:none;
+    opacity:0.6;
+    transition:opacity 0.3s ease, color 0.3s ease;
+  }
+
+  nav a:hover{opacity:1;color:var(--amber);}
+  nav a.active{opacity:1;color:var(--amber);}
+
+  .page-hero{
+    height:50vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:radial-gradient(ellipse at center 55%, #2A2018 0%, var(--ink) 60%);
+  }
+
+  .page-eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:1.5rem;
+  }
+
+  .page-hero h1{
+    font-size:clamp(2.2rem, 6vw, 4rem);
+    font-weight:400;
+    font-style:italic;
+  }
+
+  .imperfection-banner{
+    max-width:640px;
+    margin:0 auto 4rem;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--amber);
+    padding:1rem 2rem;
+    border-top:1px solid rgba(201,138,62,0.3);
+    border-bottom:1px solid rgba(201,138,62,0.3);
+  }
+
+  .prompt-list{
+    max-width:820px;
+    margin:0 auto;
+    padding:0 3rem 8rem;
+  }
+
+  .prompt-act-label{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--ash);
+    margin:3.5rem 0 1.5rem;
+    padding-bottom:0.5rem;
+    border-bottom:1px solid rgba(232,217,195,0.15);
+  }
+
+  .prompt-act-label:first-child{margin-top:0;}
+
+  .prompt-entry{
+    margin-bottom:2rem;
+    opacity:0;
+    transform:translateY(15px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .prompt-entry.visible{opacity:1;transform:translateY(0);}
+
+  .prompt-head{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    margin-bottom:0.5rem;
+  }
+
+  .prompt-num{
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    color:var(--rust);
+  }
+
+  .prompt-title{
+    font-size:1.4rem;
+    font-style:italic;
+  }
+
+  .prompt-text{
+    font-family:'Space Mono', monospace;
+    font-size:0.8rem;
+    line-height:1.8;
+    color:var(--ash);
+    background:rgba(232,217,195,0.03);
+    border-left:2px solid var(--rust);
+    padding:1rem 1.25rem;
+  }
+
+  .bts-section{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 3rem 8rem;
+  }
+
+  .bts-intro{
+    text-align:center;
+    margin-bottom:3rem;
+  }
+
+  .bts-intro h2{
+    font-size:2rem;
+    font-style:italic;
+    font-weight:400;
+    margin-bottom:0.8rem;
+  }
+
+  .bts-intro p{
+    color:var(--ash);
+    font-size:1rem;
+    max-width:48ch;
+    margin:0 auto;
+    line-height:1.7;
+  }
+
+  .bts-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1.5rem;
+  }
+
+  .bts-card{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .bts-card.visible{opacity:1;transform:translateY(0);}
+
+  .bts-card.wide{grid-column:1 / -1;}
+
+  .bts-frame{
+    width:100%;
+    aspect-ratio:3/2;
+    overflow:hidden;
+    border:1px solid rgba(232,217,195,0.15);
+    position:relative;
+  }
+
+  .bts-card.wide .bts-frame{aspect-ratio:16/7;}
+
+  .bts-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .bts-tag{
+    position:absolute;
+    top:0.75rem;
+    left:0.75rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.6rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--dust);
+    background:rgba(26,20,16,0.6);
+    padding:0.25rem 0.6rem;
+  }
+
+  .bts-caption{
+    margin-top:0.75rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+
+  .bts-caption-title{
+    font-size:1.1rem;
+    font-style:italic;
+  }
+
+  .bts-caption-num{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    color:var(--rust);
+  }
+
+  @media (max-width:800px){
+    .bts-grid{grid-template-columns:1fr;}
+    .bts-section{padding:0 1.5rem 6rem;}
+  }
+
+  footer{
+    padding:3rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    color:var(--ash);
+    border-top:1px solid rgba(232,217,195,0.1);
+  }
+
+  footer a{color:var(--dust);text-decoration:none;}
+  footer a:hover{color:var(--rust);}
+
+  @media (max-width:800px){
+    header{padding:1rem 1.5rem;}
+    nav{gap:1rem;font-size:0.6rem;}
+    .prompt-list{padding:0 1.5rem 6rem;}
+  }
+
+  .back-to-top{
+    position:fixed;
+    bottom:2rem;
+    right:2rem;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(26,20,16,0.85);
+    border:1px solid rgba(232,217,195,0.25);
+    color:var(--dust);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    z-index:60;
+    text-decoration:none;
+  }
+
+  .back-to-top.visible{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+
+  .back-to-top:hover{
+    border-color:var(--rust);
+  }
+
+  .footer-brand small{
+    display:block;
+    font-size:0.6rem;
+    color:var(--ash);
+    letter-spacing:0.08em;
+    margin-top:0.3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header>
+  <a href="index.html" class="brand">Stampede Production</a>
+  <nav>
+    <a href="act-i-departure.html">Exit 01</a>
+    <a href="act-ii-the-road.html">Exit 02</a>
+    <a href="act-iii-the-camp.html">Exit 03</a>
+    <a href="act-iv-horizon.html">Exit 04</a>
+    <a href="making-of.html" class="active">Making-of</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="page-hero">
+  <div class="page-eyebrow">Notes de production</div>
+  <h1>Making-of</h1>
+</section>
+
+<div class="imperfection-banner">Analog imperfection is intentional</div>
+
+<section class="prompt-list">
+
+  <div class="prompt-act-label">Act I — The Departure</div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">01</span><span class="prompt-title">Last Bag</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope framing, Kodak Vision3 250D emulation, static tripod shot. Pre-dawn suburban driveway, cool blue-grey light. A weathered vintage car trunk open, a woman with mid-length red hair loading a worn leather duffel bag, seen from behind, her face turned away. Long shadows, dew on the car's chrome trim. Malick-inspired negative space, muted cool color grade, fine analog grain, slight lens vignette.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">02</span><span class="prompt-title">Two Doors</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D, static wide shot. A man with three-day beard stands by the driver's door, hand resting on the roof, looking down the empty street rather than at camera. The redhead woman is a soft blur entering the passenger side. Cool dawn palette, desaturated blues and greys, suggestion rather than frontality, analog grain, soft halation on the rising sun at frame edge.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">03</span><span class="prompt-title">First Light on the Windshield</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D. Interior car shot through windshield, dashboard slightly out of focus. Reflection of empty road ahead. Faint outlines of the couple, mostly silhouetted against the low sun. Cool-to-warm gradient sky, subtle lens flare, fine grain, static camera mimicking a mounted dash rig.</div>
+  </div>
+
+  <div class="prompt-act-label">Act II — The Road</div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">04</span><span class="prompt-title">The Straight Line</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D, static tripod, extreme wide shot. A single straight desert highway vanishing to the horizon under a bleached turquoise sky. The car is small in frame, a speck of rust-red against ochre desert. Heat shimmer visible above the asphalt. Minimal, Malick-style negative space, muted warm-cool grade, subtle analog imperfections.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">05</span><span class="prompt-title">Gas Station Ghost</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D. Abandoned roadside gas station, faded signage, peeling paint. The bearded man leans against a pump, filling the tank, looking off-frame. The redhead woman is seen through the car's open door, legs out, sunhat over her face. Hard midday contre-jour, dust particles visible in the light shafts, warm ochre and rust tones, fine grain.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">06</span><span class="prompt-title">Windshield Reflection</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D. Close static shot on the car's side mirror, reflecting the woman's red hair whipping in the wind, her expression calm and distant. Desert blur in the background. Hard contre-jour, warm highlights, cool shadow falloff, visible grain and slight chromatic fringing at frame edges.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">07</span><span class="prompt-title">Two Silhouettes, One Horizon</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D, wide static shot. The car stopped on the shoulder, both figures standing at a distance from it, backs to camera, looking at the vast empty horizon. Heat haze distorting the ground line. Muted warm-cool grade, strong negative space above the horizon, Malick-inspired composition, fine grain.</div>
+  </div>
+
+  <div class="prompt-act-label">Act III — The Camp</div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">08</span><span class="prompt-title">Dunes at Dusk</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 500T emulation, static tripod. Rolling desert dunes at dusk, deep blue-violet sky fading to amber at the horizon line. Small tent silhouette and the couple's shapes in the middle distance, unposed, caught mid-gesture. Increased grain structure typical of 500T stock, cool-warm contrast, soft shadow detail.</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">09</span><span class="prompt-title">Firelight</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 500T, static shot, low angle. A small campfire in the foreground, out of focus, warm orange glow lighting the edges of two figures seated close but not touching, faces mostly in shadow. Star-flecked dark blue sky above. Heavy but intentional analog grain, warm-cool contrast, "analog imperfection is intentional."</div>
+  </div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">10</span><span class="prompt-title">Her Hair in Firelight</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 500T, close static shot. The redhead woman's profile lit only by firelight, hair catching warm orange highlights against a near-black background. Soft focus falloff, visible film grain, halation around the brightest highlights, intimate but restrained framing — face turned three-quarters away from camera.</div>
+  </div>
+
+  <div class="prompt-act-label">Act IV — The Horizon</div>
+
+  <div class="prompt-entry">
+    <div class="prompt-head"><span class="prompt-num">11</span><span class="prompt-title">Leaving, Again</span></div>
+    <div class="prompt-text">Cinematic still, 2.39:1 cinemascope, Kodak Vision3 250D, wide static shot, camera far from the subjects. Pale dawn desert, faint ground mist. The car pulling away down the straight road, two small silhouettes visible through the rear window. Desaturated palette, minimal color apart from a faint warm sun glow at the horizon. Malick-style vast negative space, fine analog grain, slight vignette — the frame holds the emptiness longer than the car.</div>
+  </div>
+
+</section>
+
+<section class="bts-section">
+  <div class="bts-intro">
+    <h2>Derrière la caméra</h2>
+    <p>L'équipe, le matériel, les comédiens entre deux prises. Le grain jetable se mêle au reportage 35mm — deux façons de regarder le même tournage.</p>
+  </div>
+
+  <div class="bts-grid">
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-01-setup-aube.png" alt="Setup de l'aube, réflecteur et moniteur">
+        <span class="bts-tag">35mm reportage</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Setup de l'aube</span>
+        <span class="bts-caption-num">MO 01</span>
+      </div>
+    </div>
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-02-entre-deux-prises.png" alt="Entre deux prises, coiffeuse ajustant les cheveux">
+        <span class="bts-tag">Disposable camera</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Entre deux prises</span>
+        <span class="bts-caption-num">MO 02</span>
+      </div>
+    </div>
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-03-rig-poursuite.png" alt="Rig de poursuite sur la route">
+        <span class="bts-tag">35mm reportage</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Le rig de poursuite</span>
+        <span class="bts-caption-num">MO 03</span>
+      </div>
+    </div>
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-04-pause-essence.png" alt="Pause essence, équipe et clap Road River">
+        <span class="bts-tag">Disposable camera</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Pause essence</span>
+        <span class="bts-caption-num">MO 04</span>
+      </div>
+    </div>
+
+    <div class="bts-card wide">
+      <div class="bts-frame">
+        <img src="mo-05-ampleur-decor.png" alt="Vue large du décor et de l'équipe technique">
+        <span class="bts-tag">35mm reportage</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">L'ampleur du décor</span>
+        <span class="bts-caption-num">MO 05</span>
+      </div>
+    </div>
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-06-lumiere-feu.png" alt="Comédiens détendus près du feu, gaffer réglant la lumière">
+        <span class="bts-tag">Disposable camera</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Lumière de feu, hors champ</span>
+        <span class="bts-caption-num">MO 06</span>
+      </div>
+    </div>
+
+    <div class="bts-card">
+      <div class="bts-frame">
+        <img src="mo-07-dernier-chargement.png" alt="Équipe rangeant le matériel à l'aube">
+        <span class="bts-tag">35mm reportage</span>
+      </div>
+      <div class="bts-caption">
+        <span class="bts-caption-title">Le dernier chargement</span>
+        <span class="bts-caption-num">MO 07</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">Two Lane, No Name</a>
+  <span class="footer-brand">Stampede Production<br><small>Un studio cinématographique de <a href="https://somedayvhs.github.io/someday-production/index.html" target="_blank" rel="noopener">Someday Production</a> — Lyon, Croix-Rousse — © 2026</small></span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.prompt-entry, .bts-card').forEach(el => observer.observe(el));
+</script>
+
+<a href="#" class="back-to-top" id="backToTop" aria-label="Remonter en haut">↑</a>
+
+<script>
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 600){
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  });
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+
+</body>
+</html>
